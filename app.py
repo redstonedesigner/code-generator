@@ -11,7 +11,7 @@ except:
     quit()
 
 # Prepare progress bar function
-def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = Fore.GREEN+'█'+Fore.RESET, printEnd = "\r"):
     """
     Call in a loop to create terminal progress bar
     @params:
@@ -42,12 +42,25 @@ class Config:
             self.format = cfg['format']
         except Exception as e:
             # Handle invalid config
-            print('ERROR - Invalid configuration file.  Regenerating...')
+            print(Back.RED+' ERROR '+Back.RESET+' Invalid configuration file.  Regenerating...')
             # Generate valid config
             with open('config.yml','w') as file:
                 file.write("charset: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'\nformat: '####-####-####-####'")
                 file.close()
-            print('ERROR - Config file regenerated.  Please take a moment to customise the configuration before running the program again.')
+            print(Back.RED+' ERROR '+Back.RESET+' Config file regenerated.  Please take a moment to customise the configuration before running the program again.')
+            quit()
+        # Check that amount will not cause infinite loops
+        randomise_count = 0
+        for i in self.format:
+            # If character is to be randomised:
+            if i == '#':
+                randomise_count += 1
+            else:
+                continue
+        # Compute number of possibilities
+        possibilities = len(self.charset)**randomise_count
+        if possibilities <= amount:
+            print(Back.YELLOW+' WARNING '+Back.RESET+' Generating this number will cause an infinite loop.  Aborting...')
             quit()
 
 config = Config()
@@ -70,15 +83,10 @@ with open('codes.txt','w') as file:
                 code += str(k)
         while code in codes:
             code = ''
-            # For each character within the format:
             for k in config.format:
-                # If character is to be randomised:
                 if k == '#':
-                    # Generate random character from charset and append it to the code
                     code += str(random.choice(config.charset))
-                # If character is not to be randomised:
                 else:
-                    # Append character to code
                     code += str(k)
         # Write code to file on a new line
         file.write(code+'\n')
