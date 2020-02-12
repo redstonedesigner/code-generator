@@ -4,6 +4,7 @@ This project is intended to allow users to generate codes that can then be used 
 ## Dependencies
 Install using `pip install -r requirements.txt` or, if using PipEnv, `pipenv install -r requirements.txt`
 * PyYAML - 5.1.1
+* Colorama - 0.4.3
 
 ## Configuration
 The configuration file has two options - `format` and `charset`.
