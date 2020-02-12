@@ -1,10 +1,13 @@
 import yaml, random, sys
+from colorama import init
+init()
+from colorama import Fore, Back, Style
 
 # Get amount from sys.argv
 try:
     amount = int(sys.argv[1])
 except:
-    print('ERROR - Please specify an amount of codes to generate.')
+    print(Back.RED+' ERROR '+Back.RESET+' Please specify an amount of codes to generate.')
     quit()
 
 # Prepare progress bar function
@@ -48,6 +51,7 @@ class Config:
             quit()
 
 config = Config()
+codes = []
 
 # Create output file
 with open('codes.txt','w') as file:
@@ -64,11 +68,23 @@ with open('codes.txt','w') as file:
             else:
                 # Append character to code
                 code += str(k)
+        while code in codes:
+            code = ''
+            # For each character within the format:
+            for k in config.format:
+                # If character is to be randomised:
+                if k == '#':
+                    # Generate random character from charset and append it to the code
+                    code += str(random.choice(config.charset))
+                # If character is not to be randomised:
+                else:
+                    # Append character to code
+                    code += str(k)
         # Write code to file on a new line
         file.write(code+'\n')
         # Advance progress bar
-        printProgressBar(i+1,amount,prefix='Generating...',suffix="("+str(i)+"/"+str(amount)+")",length=50)
+        printProgressBar(i+1,amount,prefix='Generating...',suffix="("+str(i+1)+"/"+str(amount)+")",length=50)
     # Close file when all codes are generated
     file.close()
     # Print success message
-    print('SUCCESS - Codes generated and can be found in codes.txt')
+    print(Back.GREEN+' SUCCESS '+Back.RESET+' Codes generated and can be found in codes.txt')
