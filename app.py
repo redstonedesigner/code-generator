@@ -37,10 +37,11 @@ class Config:
     def __init__(self):
         try:
             # Load valid config
-            cfg = yaml.load(open('config.yml','r'),Loader=yaml.CLoader)
+            cfg = yaml.load(open('config.yml','r'),Loader=yaml.Loader)
             self.charset = cfg['charset']
             self.format = cfg['format']
-        except Exception:
+        except Exception as e:
+            print(str(e))
             # Handle invalid config
             print(Back.RED+' ERROR '+Back.RESET+' Invalid configuration file.  Regenerating...')
             # Generate valid config
